@@ -2,68 +2,63 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>say poop</title>
-    <style media="screen">
-      body {
-        font-family: Roboto, Arial, sans-serif;
-        background: #ECEFF1;
-        color: rgba(0,0,0,0.87);
-      }
+    <title>💩</title>
 
-      a {
-        color: rgb(3,155,229);
-      }
-
-      #message {
-        max-width: 400px;
-        margin: 40px auto;
-        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2),0 1px 1px 0 rgba(0,0,0,0.14),0 2px 1px -1px rgba(0,0,0,0.12);
-        border-radius: 2px;
-        background: white;
-        padding: 16px 24px;
-      }
-
-      #message h1 {
-        font-size: 22px;
-        font-weight: 500;
-        text-align: center;
-        margin: 0 0 16px;
-      }
-
-      #message p {
-        font-weight: 300;
-        line-height: 150%;
-      }
-
-      #message ul {
-        list-style: none;
-        margin: 16px 0 0;
-        padding: 0;
-        text-align: center;
-      }
-
-      #message li a {
-        display: inline-block;
-        padding: 8px;
-        text-transform: uppercase;
-        text-decoration: none;
-        font-weight: 500;
-        background: rgb(3,155,229);
-        color: white;
-        border: 1px solid rgb(3,155,229);
-        border-radius: 3px;
-        font-size: 14px;
-        box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
-      }
-    </style>
-  </head>
+		<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
+		<script>
+			var config = {
+				apiKey: "AIzaSyC_-EqCOnvt6AbeI-p46FZQaxrV1b2SyMA",
+				authDomain: "saypoop-dev.firebaseapp.com",
+				databaseURL: "https://saypoop-dev.firebaseio.com",
+				storageBucket: "saypoop-dev.appspot.com",
+				messagingSenderId: "888469153156"
+			};
+			firebase.initializeApp(config);
+		</script>
+	</head>
   <body>
-    <div id="message">
-      <h1>say poop</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <ul>
-        <li><a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a></li>
+    <header>
+      <h1>saypoop 💩</h1>
+    </header>
+    <div id="formContainer">
+			<input id="poopTextBox" placeholder="poop here">
+			<button id="postPoopButton" onclick="postPoop()">Post</button>
+    </div>
+    <script>
+			function postPoop() {
+        var poopTextBox = document.getElementById("poopTextBox")
+        var text = poopTextBox.value
+        posted_at = new Date().getTime()
+			  var poopData = {
+          text,
+          posted_at
+        }
+        console.log(poopData)
+        var result = firebase.database().ref("/poops/").push(poopData)
+        poopTextBox.value = ""
+        console.log("pushed. result:")
+        console.log(result)
+			}
+    </script>
+    <div id="poopsContainer">
+      <ul id="poops">
       </ul>
     </div>
+    <script>
+      window.onload = function() {
+        // Authentication
+        firebase.auth().signInAnonymously().catch(function(error) {
+          console.error(error)
+        })
+
+        // Listeners
+        firebase.database().ref("/poops").on("child_added", function(data) {
+          var poopList = document.getElementById("poops")
+          var poop = document.createElement("li")
+          poop.innerText = data.val().text
+          poopList.appendChild(poop)
+        })
+      }
+    </script>
   </body>
 </html>
