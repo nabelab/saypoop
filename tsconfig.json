@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {},
+  "files": [
+    "typings/tsd.d.ts"
+  ]
+}
