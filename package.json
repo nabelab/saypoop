@@ -10,7 +10,9 @@
   "author": "nabelab",
   "license": "MIT",
   "scripts": {
-    "start": "./node_modules/.bin/webpack-dev-server --inline --hot"
+    "lite-server": "./node_modules/.bin/lite-server",
+    "wepback": "./node_modules/.bin/webpack -w",
+    "start": "concurrently \"npm run lite-server\" \"npm run webpack\""
   },
   "devDependencies": {
     "babel-core": "^6.17.0",
@@ -34,7 +36,9 @@
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
+    "concurrently": "^3.1.0",
     "firebase": "^3.6.1",
+    "lite-server": "^2.2.2",
     "react": "^15.4.0-rc.4",
     "react-dom": "^15.4.0-rc.4",
     "react-redux": "^4.4.5",
