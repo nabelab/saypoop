@@ -1,35 +1,32 @@
+var webpack = require("webpack")
+
 module.exports = {
   context: __dirname + "/src",
-  entry: {
-    app: "./app.tag",
-    bundle: "./index.ts"
-  },
+  entry: "./index.js",
   output: {
-    path: __dirname + "/dist",
-    filename: "[name].js"
+    path: __dirname + "/public/scripts",
+    filename: "bundle.js",
+    publicPath: "/public/"
   },
+  plugins: [new webpack.ProvidePlugin({ riot: "riot" })],
   devtool: "inline-source-map",
   module: {
-    loaders: [
-      {
-        test: /\.ts$/,
-        loader: "ts-loader"
-      },
+    preLoaders: [
       {
         test: /\.tag$/,
         loader: "riotjs-loader",
-        query: { type: "typescript" }
+        query: { type: "babel" }
+      }
+    ],
+    loaders: [
+      {
+        test: /\.js$|\.tag$/,
+        loader: "babel-loader"
       }
     ]
   },
   resolve: {
-    extensions: [".ts", ".tag"]
+    extensions: ["", ".js", ".tag"]
   },
-  devServer: {
-    contentBase: "dist",
-    port: 3000,
-    historyApiFallback: {
-      index: "/index.html"
-    }
-  }
+  devServer: { contentBase: "./public", port: 3000 }
 }

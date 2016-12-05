@@ -2,7 +2,7 @@
   <h1>{ title }</h1>
 
   <script>
-    var title = "Hello, Riot!"
+    this.title = "Hello, Riot!"
   </script>
 
   <style>
