@@ -1,29 +1,47 @@
+var webpack = require("webpack");
+
 module.exports = {
-  context: __dirname + "/src",
-  entry: {
-    javascript: "./index.js",
-    html: "./index.html"
-  },
+  entry: "./src/index.js",
   output: {
     path: __dirname + "/public",
-    filename: "./bundle.js"
+    filename: "bundle.js",
+    publicPath: "/public/",
   },
-  devtool: "inline-source-map",
   module: {
+    preLoaders: [
+      {
+        test: /\.tag$/,
+        exclude: /node_modules/,
+        loader: "riotjs-loader",
+        query: {
+          type: "babel"
+        }
+      }
+    ],
     loaders: [
-      { test: /\.jsx?$/, exclude: /node_modules/, loaders: ["babel"] },
-      { test: /\.css$/, loaders: ["style", "css?modules"] },
-      { test: /\.html$/, loader: "file?name=[name].[ext]" }
+      {
+        test: /\.js$|\.tag$/,
+        exclude: /node_modules/,
+        loader: "babel-loader"
+      },
+      {
+        test: /\.tag.html$/,
+        exclude: /node_modules/,
+        loader: "tag"
+      },
+      {
+        test: /\.less$/,
+        loader: "style-loader!css-loader!less-loader"
+      }
     ]
   },
   resolve: {
-    extensions: ["", ".js", ".jsx"]
+      extensions: ["", ".js", ".tag", ".html"]
   },
-  devServer: {
-    contentBase: "dist",
-    port: 3000,
-    historyApiFallback: {
-      index: "/index.html"
-    }
-  }
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.ProvidePlugin({
+      riot: "riot"
+    })
+  ]
 }

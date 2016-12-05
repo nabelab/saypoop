@@ -10,7 +10,9 @@
   "author": "nabelab",
   "license": "MIT",
   "scripts": {
-    "start": "./node_modules/.bin/webpack-dev-server --inline --hot"
+    "lite-server": "./node_modules/.bin/lite-server",
+    "webpack": "./node_modules/webpack/bin/webpack.js",
+    "start": "concurrently \"npm run lite-server\" \"npm run webpack\""
   },
   "devDependencies": {
     "babel-core": "^6.17.0",
@@ -30,17 +32,23 @@
     "style-loader": "^0.13.1",
     "stylelint": "^7.4.2",
     "stylelint-config-standard": "^13.0.2",
+    "tag-loader": "^0.3.0",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
+    "concurrently": "^3.1.0",
     "firebase": "^3.6.1",
+    "lite-server": "^2.2.2",
     "react": "^15.4.0-rc.4",
     "react-dom": "^15.4.0-rc.4",
     "react-redux": "^4.4.5",
     "react-router": "^2.8.1",
     "react-router-redux": "^4.0.6",
     "redux": "^3.6.0",
-    "redux-logic": "^0.9.3"
+    "redux-logic": "^0.9.3",
+    "riot": "^3.0.1",
+    "riot-loader": "^1.0.0",
+    "tag-loader": "^0.3.0"
   }
 }
