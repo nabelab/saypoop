@@ -2,16 +2,17 @@ var webpack = require("webpack")
 
 module.exports = {
   context: __dirname + "/src",
-  entry: "./index.js",
+  entry: {
+    bundle: "./index.js"
+  },
   output: {
-    path: __dirname + "/public/scripts",
-    filename: "bundle.js",
-    publicPath: "/public/"
+    path: __dirname + "/public",
+    filename: "[name].js"
   },
   plugins: [new webpack.ProvidePlugin({ riot: "riot" })],
   devtool: "inline-source-map",
   module: {
-    preLoaders: [
+    preGLoaders: [
       {
         test: /\.tag$/,
         loader: "riotjs-loader",
@@ -28,5 +29,5 @@ module.exports = {
   resolve: {
     extensions: ["", ".js", ".tag"]
   },
-  devServer: { contentBase: "./public", port: 3000 }
+  devServer: { contentBase: "./public" }
 }
