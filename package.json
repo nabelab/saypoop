@@ -26,6 +26,7 @@
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
+    "babel-core": "^6.18.2",
     "concurrently": "^3.1.0",
     "firebase": "^3.6.1",
     "riot": "^3.0.1"
