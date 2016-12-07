@@ -1,2 +1,2 @@
-require("./app")
+require("./components/pages/app")
 riot.mount("*")
