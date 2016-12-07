@@ -12,7 +12,7 @@ module.exports = {
   plugins: [new webpack.ProvidePlugin({ riot: "riot" })],
   devtool: "inline-source-map",
   module: {
-    preGLoaders: [
+    preLoaders: [
       {
         test: /\.tag$/,
         loader: "riotjs-loader",
