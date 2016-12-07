@@ -3,11 +3,12 @@ var webpack = require("webpack")
 module.exports = {
   context: __dirname + "/src",
   entry: {
-    bundle: "./index.js"
+    html: "./index.html",
+    javascript: "./index.js"
   },
   output: {
     path: __dirname + "/public",
-    filename: "[name].js"
+    filename: "bundle.js"
   },
   plugins: [new webpack.ProvidePlugin({ riot: "riot" })],
   devtool: "inline-source-map",
@@ -21,8 +22,13 @@ module.exports = {
     ],
     loaders: [
       {
-        test: /\.js$|\.tag$/,
+        test: /\.js$/,
         loader: "babel-loader"
+      },
+      {
+        test: /\.html$/,
+        loader: "file-loader",
+        query: { name: "[name].[ext]" }
       }
     ]
   },
