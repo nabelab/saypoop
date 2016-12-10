@@ -8,7 +8,7 @@
   </div>
   <div id="tagSelectContainer">
     <ul id="tagList">
-      <li each={ poopTags }>
+      <li each={ count, name in poopTags }>
         <input type="checkbox" value="{ name }">{ name } ({ count })
       </li>
     </ul>
@@ -39,10 +39,7 @@
       })
 
       database.ref("/tags").on("value", (snapshot) => {
-        let tags = snapshot.val()
-        for (let tag in tags) {
-          this.poopTags.push({ name: tag, count: tags[tag] })
-        }
+        this.poopTags = snapshot.val()
         this.update()
       })
     });
