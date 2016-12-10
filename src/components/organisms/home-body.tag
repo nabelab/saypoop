@@ -7,6 +7,9 @@
     </form>
   </div>
   <script>
+    var auth = require("../../firebase").auth
+    var database = require("../../firebase").database
+
     function postPoop(e) {
       e.preventDefault()
       var poopTextBox = document.getElementById("poopTextBox")
@@ -25,14 +28,14 @@
         posted_at
       }
       console.log(poopData)
-      var result = firebase.database().ref("/poops/").push(poopData)
+      var result = database.ref("/poops/").push(poopData)
       poopTextBox.value = ""
       tagsTextBox.value = ""
       console.log("pushed. result:")
       console.log(result)
     }
     function incrementTag(tag) {
-      firebase.database().ref("/tags/" + tag).transaction(function(count) {
+      database.ref("/tags/" + tag).transaction(function(count) {
         if (count) {
           return count + 1
         } else {
@@ -64,19 +67,19 @@
 
     window.onload = function() {
       // Authentication
-      firebase.auth().signInAnonymously().catch(function(error) {
+      auth.signInAnonymously().catch(function(error) {
         console.error(error)
       })
 
       // Listeners
-      firebase.database().ref("/poops").on("child_added", function(data) {
+      database.ref("/poops").on("child_added", function(data) {
         var poopList = document.getElementById("poops")
         var poop = document.createElement("li")
         poop.innerText = data.val().text
         poopList.appendChild(poop)
       })
 
-      firebase.database().ref("/tags").on("value", function(snapshot) {
+      database.ref("/tags").on("value", function(snapshot) {
         var tagList = document.getElementById("tagList")
         tagList.innerHTML = ""
         var tags = snapshot.val()
