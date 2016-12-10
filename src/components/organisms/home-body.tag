@@ -1,39 +1,74 @@
 <home-body>
   <div id="formContainer">
-    <form onsubmit="postPoop(event)">
-      <input id="poopTextBox" placeholder="poop here">
-      <input id="tagsTextBox" placeholder="tag1, tag2">
+    <form onsubmit={ postPoop }>
+      <input ref="poopTextBox" placeholder="poop here">
+      <input ref="tagsTextBox" placeholder="tag1, tag2">
       <button>Post</button>
     </form>
   </div>
-  <script>
-    var auth = require("../../firebase").auth
-    var database = require("../../firebase").database
+  <div id="tagSelectContainer">
+    <ul id="tagList">
+      <li each={ poopTags }>
+        <input type="checkbox" value="{ name }">{ name } ({ count })
+      </li>
+    </ul>
+  </div>
+  <div id="poopsContainer">
+    <ul id="poops">
+      <li each={ poops }>{ text }</li>
+    </ul>
+  </div>
 
-    function postPoop(e) {
-      e.preventDefault()
-      var poopTextBox = document.getElementById("poopTextBox")
-      var tagsTextBox = document.getElementById("tagsTextBox")
-      var tags = {}
-      tagsTextBox.value.split(",").forEach(function(tag) {
-        tag = tag.replace(/^\s+|\s+$/g, "")
-        tags[tag] = true
-        incrementTag(tag)
+  <script>
+    let auth = require("../../firebase").auth
+    let database = require("../../firebase").database
+
+    this.poops = []
+    this.poopTags = []
+
+    this.on("mount", () => {
+      // Authentication
+      auth.signInAnonymously().catch((error) => {
+        console.error(error)
       })
-      var text = poopTextBox.value
-      posted_at = new Date().getTime()
+
+      // Listeners
+      database.ref("/poops").on("child_added", (data) => {
+        this.poops.push({ text: data.val().text })
+        this.update()
+      })
+
+      database.ref("/tags").on("value", (snapshot) => {
+        let tags = snapshot.val()
+        for (let tag in tags) {
+          this.poopTags.push({ name: tag, count: tags[tag] })
+        }
+        this.update()
+      })
+    });
+
+    this.postPoop = (e) => {
+      e.preventDefault()
+      var text = this.refs.poopTextBox.value
+      var posted_at = new Date().getTime()
       var poopData = {
         text,
-        tags,
         posted_at
       }
-      console.log(poopData)
+      if (this.refs.tagsTextBox.value) {
+        var tags = {}
+        this.refs.tagsTextBox.value.split(",").forEach(function(tag) {
+          tag = tag.replace(/^\s+|\s+$/g, "")
+          tags[tag] = true
+          incrementTag(tag)
+        })
+        poopData["tags"] = tags
+      }
       var result = database.ref("/poops/").push(poopData)
-      poopTextBox.value = ""
-      tagsTextBox.value = ""
-      console.log("pushed. result:")
-      console.log(result)
+      this.refs.poopTextBox.value = ""
+      this.refs.tagsTextBox.value = ""
     }
+
     function incrementTag(tag) {
       database.ref("/tags/" + tag).transaction(function(count) {
         if (count) {
@@ -43,16 +78,7 @@
         }
       })
     }
-  </script>
-  <div id="tagSelectContainer">
-    <ul id="tagList">
-    </ul>
-  </div>
-  <div id="poopsContainer">
-    <ul id="poops">
-    </ul>
-  </div>
-  <script>
+
     function selectedTags() {
       var tagList = document.getElementById("tagList")
       var tags = []
@@ -63,37 +89,6 @@
         }
       })
       return tags
-    }
-
-    window.onload = function() {
-      // Authentication
-      auth.signInAnonymously().catch(function(error) {
-        console.error(error)
-      })
-
-      // Listeners
-      database.ref("/poops").on("child_added", function(data) {
-        var poopList = document.getElementById("poops")
-        var poop = document.createElement("li")
-        poop.innerText = data.val().text
-        poopList.appendChild(poop)
-      })
-
-      database.ref("/tags").on("value", function(snapshot) {
-        var tagList = document.getElementById("tagList")
-        tagList.innerHTML = ""
-        var tags = snapshot.val()
-        var li, checkbox
-        for (tag in tags) {
-          checkbox = document.createElement("input")
-          checkbox.setAttribute("type", "checkbox")
-          checkbox.setAttribute("value", tag)
-          li = document.createElement("li")
-          li.appendChild(checkbox)
-          li.appendChild(document.createTextNode(tag + " (" + tags[tag] + ")"))
-          tagList.appendChild(li)
-        }
-      })
     }
   </script>
 </home-body>
