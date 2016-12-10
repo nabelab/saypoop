@@ -14,9 +14,7 @@
     </ul>
   </div>
   <div id="poopsContainer">
-    <ul id="poops">
-      <li each={ poops }>{ text }</li>
-    </ul>
+    <poop poop={ poop } each={ poop in poops }></poop>
   </div>
 
   <script>
@@ -34,7 +32,7 @@
 
       // Listeners
       database.ref("/poops").on("child_added", (data) => {
-        this.poops.push({ text: data.val().text })
+        this.poops.unshift(data.val())
         this.update()
       })
 
