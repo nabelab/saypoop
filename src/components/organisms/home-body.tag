@@ -1,13 +1,11 @@
-require("../molecules/poop")
 require("../molecules/poop-form")
 require("../molecules/tag-list")
+require("../molecules/poop-list")
 
 <home-body>
   <poop-form></poop-form>
   <tag-list poop-tags={ poopTags }></tag-list>
-  <div id="poopsContainer">
-    <poop poop={ poop } each={ poop in poops }></poop>
-  </div>
+  <poop-list poops={ poops }></poop-list>
 
   <script>
     let auth = require("../../firebase").auth
